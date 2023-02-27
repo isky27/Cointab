@@ -9,9 +9,12 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogContent,
-  AlertDialogOverlay,
   AlertDialogCloseButton,
   useDisclosure,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 
 const Home = () => {
@@ -19,6 +22,10 @@ const Home = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     
     const [loading,setLoading] = useState(false)
+
+    const [deleteLoading, setDeleteLoading] = useState(false)
+
+    const [fetchAlert, setFetchAlert]= useState(false)
 
     const cancelRef = React.useRef();
 
@@ -28,23 +35,26 @@ const Home = () => {
 
     const fetchUser = async()=>{
         if(loading){
-           return alert("already some data fetch is going on");
-        }
+         return setFetchAlert(true)
+       }
         try {
           setLoading(true)
           const res = await axios.get(`${url}/users/fetch`);
           setLoading(false)
+          setFetchAlert(false)
         } catch (error) {
             
         }
     }
     
     const deleteUsers = async()=>{
+           setDeleteLoading(true);
         try {
           const res = await axios.delete(`${url}/users/delete`);
-          onClose()
-          console.log(res); 
+           setDeleteLoading(false);
+           onClose();
         } catch (error) {
+           setDeleteLoading(false);
           onClose();
           alert("No data found")
         }
@@ -57,7 +67,14 @@ const Home = () => {
 
   return (
     <>
-      <Card btn_name={"Fetch Users"} handleClick={fetchUser}/>
+      {fetchAlert && (
+        <Alert status="error" w={"80%"} m={"auto"}>
+          <AlertIcon />
+          <AlertTitle>Already some data fetch is going on!</AlertTitle>
+          <AlertDescription>Please Wait.</AlertDescription>
+        </Alert>
+      )}
+      <Card btn_name={"Fetch Users"} handleClick={fetchUser} />
       <Card btn_name={"Delete Users"} handleClick={onOpen} />
       <AlertDialog
         motionPreset="slideInBottom"
@@ -66,8 +83,6 @@ const Home = () => {
         isOpen={isOpen}
         isCentered
       >
-        <AlertDialogOverlay />
-
         <AlertDialogContent>
           <AlertDialogHeader>Discard Changes?</AlertDialogHeader>
           <AlertDialogCloseButton />
@@ -78,7 +93,12 @@ const Home = () => {
             <Button ref={cancelRef} onClick={onClose}>
               No
             </Button>
-            <Button colorScheme="red" ml={3} onClick={deleteUsers}>
+            <Button
+              colorScheme="red"
+              ml={3}
+              onClick={deleteUsers}
+              isLoading={deleteLoading}
+            >
               Yes
             </Button>
           </AlertDialogFooter>
