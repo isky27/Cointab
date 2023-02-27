@@ -11,13 +11,26 @@ const Pagination = ({ itemsPerPage, totalItems, paginate }) => {
   const [activePage, setActivePage] = useState(1);
 
   const handleClick = (number) => {
-    console.log(number)
     paginate(number);
     setActivePage(number);
   };
 
+  const handleNext = ()=>{
+    setActivePage(pre=>pre+1)
+    paginate(activePage);
+  }
+    const handlePrev = () => {
+    setActivePage((pre) => pre - 1);
+    paginate(activePage);
+    };
   return (
     <Box m={"auto"} textAlign={"center"} py={3}>
+      <Button
+        isDisabled={activePage == 1 ? true : false}
+        onClick={handlePrev}
+      >
+        Prev
+      </Button>
       {pageNumbers.map((number) => (
         <Button
           key={number}
@@ -28,6 +41,12 @@ const Pagination = ({ itemsPerPage, totalItems, paginate }) => {
           {number}
         </Button>
       ))}
+      <Button
+        isDisabled={activePage == pageNumbers.length ? true : pageNumbers.length==0?true: false}
+        onClick={handleNext}
+      >
+        Next
+      </Button>
     </Box>
   );
 };

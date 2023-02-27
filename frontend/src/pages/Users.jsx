@@ -10,6 +10,7 @@ import {
   TableContainer,
   Image,
   Select,
+  Text
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
@@ -22,20 +23,23 @@ const Users = () => {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
-  
-  const [page,setPage] = useState(1)
+  const [loading,setLoading] = useState(false)
   const [count,setCount] = useState(0)
 //   const [gender]
    const url = process.env.REACT_APP_MAIL_URL;
    
    const getData = async(page=1)=>{
-    console.log("getting")
+        setLoading(true)
         try {
             const res = await axios.get(`${url}/users/api?page=${page}`);
             setData(res.data.userdata);
             setCount(res.data.count)
+            setLoading(false);
+
             } catch (error) {
                 console.log(error);
+               setLoading(false);
+
             }
    }
 
@@ -62,37 +66,41 @@ const Users = () => {
         <option value="male">Male</option>
         <option value="female">Female</option>
       </Select>
-      <TableContainer m={"auto"}>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Gender</Th>
-              <Th>City, State</Th>
-              <Th>Age</Th>
-              <Th>Profile</Th>
-            </Tr>
-          </Thead>
-          {data &&
-            data.map((el) => {
-              return (
-                <Tbody key={el._id}>
-                  <Tr>
-                    <Td>{`${el.name.title} ${el.name.first} ${el.name.last}`}</Td>
-                    <Td>{`${
-                      el.gender.charAt(0).toUpperCase() + el.gender.slice(1)
-                    }`}</Td>
-                    <Td>{`${el.location.city}, ${el.location.state}`}</Td>
-                    <Td>{`${el.dob.age} Yrs`}</Td>
-                    <Td>
-                      <Image w={"30px"} src={el.picture.large} />
-                    </Td>
-                  </Tr>
-                </Tbody>
-              );
-            })}
-        </Table>
-      </TableContainer>
+      {loading ? (
+        <Text m={"auto"} textAlign={"center"}>"Loading..."</Text>
+      ) : (
+        <TableContainer m={"auto"}>
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Name</Th>
+                <Th>Gender</Th>
+                <Th>City, State</Th>
+                <Th>Age</Th>
+                <Th>Profile</Th>
+              </Tr>
+            </Thead>
+            {data &&
+              data.map((el) => {
+                return (
+                  <Tbody key={el._id}>
+                    <Tr>
+                      <Td>{`${el.name.title} ${el.name.first} ${el.name.last}`}</Td>
+                      <Td>{`${
+                        el.gender.charAt(0).toUpperCase() + el.gender.slice(1)
+                      }`}</Td>
+                      <Td>{`${el.location.city}, ${el.location.state}`}</Td>
+                      <Td>{`${el.dob.age} Yrs`}</Td>
+                      <Td>
+                        <Image w={"30px"} src={el.picture.large} />
+                      </Td>
+                    </Tr>
+                  </Tbody>
+                );
+              })}
+          </Table>
+        </TableContainer>
+      )}
 
       <Pagination
         w={"100%"}

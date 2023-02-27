@@ -57,7 +57,7 @@ const Home = () => {
 
   return (
     <>
-      <Card btn_name={"Fetch Users"} handleClick={fetchUser} loading={loading} />
+      <Card btn_name={"Fetch Users"} handleClick={fetchUser}/>
       <Card btn_name={"Delete Users"} handleClick={onOpen} />
       <AlertDialog
         motionPreset="slideInBottom"
