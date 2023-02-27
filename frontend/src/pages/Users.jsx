@@ -25,13 +25,13 @@ const Users = () => {
   const [data, setData] = useState([]);
   const [loading,setLoading] = useState(false)
   const [count,setCount] = useState(0)
-//   const [gender]
+  const [gender,setGender]=useState("")
    const url = process.env.REACT_APP_MAIL_URL;
    
    const getData = async(page=1)=>{
         setLoading(true)
         try {
-            const res = await axios.get(`${url}/users/api?page=${page}`);
+            const res = await axios.get(`${url}/users/api?page=${page}&gender=${gender}`);
             setData(res.data.userdata);
             setCount(res.data.count)
             setLoading(false);
@@ -44,11 +44,11 @@ const Users = () => {
    }
 
    const genderFilter=(event)=>{
-      console.log(event.target.value)
+      setGender(event.target.value);
    }
   useEffect(()=>{
    getData()
-  }, []);
+  }, [gender]);
 
   return (
     <Box w={"100%"} m={"auto"}>
@@ -63,11 +63,14 @@ const Users = () => {
         </Button>
       </Box>
       <Select placeholder="Select Gender" size="md" onChange={genderFilter}>
+        <option value="">All</option>
         <option value="male">Male</option>
         <option value="female">Female</option>
       </Select>
       {loading ? (
-        <Text m={"auto"} textAlign={"center"}>"Loading..."</Text>
+        <Text m={"auto"} textAlign={"center"}>
+          "Loading..."
+        </Text>
       ) : (
         <TableContainer m={"auto"}>
           <Table variant="simple">
