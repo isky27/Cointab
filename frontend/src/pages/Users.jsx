@@ -1,5 +1,5 @@
 import {
-    Box,
+  Box,
   Button,
   Table,
   Thead,
@@ -9,6 +9,7 @@ import {
   Td,
   TableContainer,
   Image,
+  Select,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
@@ -24,9 +25,10 @@ const Users = () => {
   
   const [page,setPage] = useState(1)
   const [count,setCount] = useState(0)
+//   const [gender]
    const url = process.env.REACT_APP_MAIL_URL;
    
-   const getData = async(page=2)=>{
+   const getData = async(page=1)=>{
     console.log("getting")
         try {
             const res = await axios.get(`${url}/users/api?page=${page}`);
@@ -37,18 +39,29 @@ const Users = () => {
             }
    }
 
+   const genderFilter=(event)=>{
+      console.log(event.target.value)
+   }
   useEffect(()=>{
    getData()
   }, []);
 
   return (
     <Box w={"100%"} m={"auto"}>
-        <Box w={"100%"} m={"auto"} py={2} textAlign={"center"}> 
-         <Button textAlign={"center"} m={"auto"} colorScheme="blue" onClick={() => navigate("/")}>
-            Home
+      <Box w={"100%"} m={"auto"} py={2} textAlign={"center"}>
+        <Button
+          textAlign={"center"}
+          m={"auto"}
+          colorScheme="blue"
+          onClick={() => navigate("/")}
+        >
+          Home
         </Button>
-        </Box>
- 
+      </Box>
+      <Select placeholder="Select Gender" size="md" onChange={genderFilter}>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </Select>
       <TableContainer m={"auto"}>
         <Table variant="simple">
           <Thead>
@@ -81,7 +94,13 @@ const Users = () => {
         </Table>
       </TableContainer>
 
-      <Pagination w={"100%"} m={"auto"} totalItems={count} itemsPerPage={10} paginate={getData}  />
+      <Pagination
+        w={"100%"}
+        m={"auto"}
+        totalItems={count}
+        itemsPerPage={10}
+        paginate={getData}
+      />
     </Box>
   );
 };

@@ -5,7 +5,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 
-export default function Card({ btn_name, handleClick }) {
+export default function Card({ btn_name, handleClick, loading=false }) {
   return (
     <Center py={5}>
       <Box
@@ -22,6 +22,7 @@ export default function Card({ btn_name, handleClick }) {
             bg={"green.400"}
             color={"white"}
             rounded={"xl"}
+            isLoading={loading}
             boxShadow={"0 5px 20px 0px rgb(72 187 120 / 43%)"}
             _hover={{
               bg: "green.500",
